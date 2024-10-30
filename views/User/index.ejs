@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Contact Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js" charset="utf-8"></script>
+    <%- include('../Files/HeaderFiles.ejs') %>
+    <style>
+        /*#contact-form {*/
+        /*    position: absolute;*/
+        /*    top: -10%;*/
+        /*    left: 50%;*/
+        /*    transform: translate(-50%, -50%);*/
+        /*    width: 50%; !* adjust this value to control the form's width *!*/
+        /*}*/
+        /*.error*/
+    </style>
+
+</head>
+<body>
+<%- include('../Files/Header.ejs') %>
+<%- include('../Files/BreadCrumb.ejs', {title: 'Create Account'}) %>
+
+<div class="main-content">
+
+    <section class="contact section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="form md-mb50">
+                        <form id="contact" >
+
+                            <div class="messages"></div>
+
+                            <div class="controls">
+
+                                <div class="form-group">
+                                    <input required id="name" name="name" type="text" placeholder="Enter Your Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <input required id="email" name="email" type="email" placeholder="Enter E-mail">
+                                </div>
+
+                                <div class="form-group">
+                                    <input required id="password" name="password" type="password" placeholder="Enter Password">
+                                </div>
+
+                                <button type="button" class="btn btn-primary" onclick="onSubmit()">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('../Files/Footer.ejs') %>
+</div>
+
+
+<%- include('../Files/Scripts.ejs') %>
+<!--<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>-->
+
+<script>
+    async function onSubmit(){
+        let name = document.getElementById('name').value
+        let email = document.getElementById('email').value
+        let password = document.getElementById('password').value
+
+        if($("#contact").valid()){
+            let url = "/add-user"
+            let response = await fetch(url,{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({name:name,email:email,password:password})
+            })
+            console.log({name:name,email:email,password:password})
+            response= await response.json();
+            console.log(response)
+            if(response.error!= ""){
+                Qual.errord("Oh No",response.error)
+            }else {
+                //console.log("success")
+                document.getElementById('contact').reset()
+
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                })
+            }
+        }
+
+
+
+    }
+</script>
+
+</body>
+</html>

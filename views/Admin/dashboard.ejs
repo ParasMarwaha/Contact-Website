@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <%- include('../Files/HeaderFiles.ejs') %>
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js" charset="utf-8"></script>
+
+    <style>
+        .dt-input {
+            background: #000 !important;
+        }
+    </style>
+</head>
+<body onload="ReadUser()">
+<%- include('../Files/AdminHeader.ejs') %>
+<%- include('../Files/BreadCrumb.ejs', {title: 'Users Info'}) %>
+
+
+<div class="main-content">
+
+    <section class="contact section-padding " >
+        <div class="container">
+
+
+                <table id="myTable" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Sr.No</th>
+                        <th class="text-center">Name</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Contacts</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="users"></tbody>
+                </table>
+
+
+        </div>
+    </section>
+
+
+    <%- include('../Files/Footer.ejs') %>
+</div>
+
+
+
+
+<%- include('../Files/Scripts.ejs') %>
+
+<script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+<script>
+
+    async function ReadUser(){
+        // get user from server
+        let url = "/read-user"
+        let response = await fetch(url)
+        response= await response.json()
+        console.log(response.error)
+        if(response.error != ""){
+            console.log(response.error)
+                Qual.errord("Oh no !",response.error);
+        }else{
+            // console.log(response.records)
+            let html = ``;
+            for (let i = 0; i < response.records.length; i++) {
+                let record = response.records[i];
+                //console.log(record)
+                html += `<tr>
+<td class="text-center">${i + 1}</td>
+                         <td class="text-center">${record.name}</td>
+                         <td class="text-center">${record.email}</td>
+<td class="text-center">
+<a href="/read-user-contact/${record.id}" class="btn btn-success btn-sm">Veiw</a>
+</td>
+                         </tr>`
+            }
+            document.getElementById('users').innerHTML = html;
+            let table = new DataTable('#myTable');
+        }
+
+    }
+
+
+</script>
+
+<div class="row">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contacts</th>
+
+        </tr>
+        </thead>
+        <tbody id="users"></tbody>
+    </table>
+</div>
+
+</body>
+</html>

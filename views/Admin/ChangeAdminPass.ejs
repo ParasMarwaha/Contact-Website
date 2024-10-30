@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js" charset="utf-8"></script>
+    <%- include('../Files/HeaderFiles.ejs') %>
+
+</head>
+<body>
+<%- include('../Files/AdminHeader.ejs') %>
+<%- include('../Files/BreadCrumb.ejs', {title: 'Change Password'}) %>
+
+
+<div class="main-content">
+    <section class="contact section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-md-3">
+                    <div class="form md-mb50">
+
+                        <form id="contact-form" >
+
+                            <div class="messages"></div>
+
+                            <div class="controls">
+
+                                <div class="form-group">
+                                    <input required name="password"  id="current" type="password" placeholder="Enter Current Password"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <input required name="new" id="newpass" type="password" placeholder="Enter New Password"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <input required name="confirm" id="confirm" type="password" placeholder="Confirm Password"/>
+                                </div>
+
+                                <button type="button" class="btn btn-primary" onclick="onSubmit()">Change-Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <%- include('../Files/Footer.ejs') %>
+
+</div>
+
+<script>
+    async function onSubmit(){
+        let current = document.getElementById('current').value
+        let newpass = document.getElementById('newpass').value
+        let confirm = document.getElementById('confirm').value
+
+        if($("#contact-form").valid()) {
+            let url = "/change-admin-password"
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({current: current, newpass: newpass, confirm: confirm})
+            })
+            //console.log({name:name,email:email,password:password})
+            response = await response.json();
+            //console.log(response)
+            if (response.error != "") {
+                Qual.errord("Oh No", response.error)
+            } else {
+                //console.log("success")
+                document.getElementById('contact-form').reset()
+
+                Qual.successd("Success", response.message);
+            }
+        }
+    }
+</script>
+
+<%- include('../Files/Scripts.ejs') %>
+</body>
+</html>

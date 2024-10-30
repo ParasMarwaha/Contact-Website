@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Contact Website</title>
+    <%- include('../Files/HeaderFiles.ejs') %>
+    <%- include('../Styles/Modal.ejs') %>
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js"
+            charset="utf-8"></script>
+    <style>
+        .error{
+            color: darkred;
+        }
+
+        .dt-input {
+            background: #000 !important;
+        }
+    </style>
+</head>
+<body onload="ReadContact()">
+<%- include('../Files/UserHeader.ejs') %>
+<%- include('../Files/BreadCrumb.ejs', {title: 'Contacts'}) %>
+
+
+<div class="modal" id="editcontacts" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" role="document">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color : black">Update Contact</h5>
+                <button type="button" class="close" onclick="CloseModal()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="editContact">
+                    <input type="hidden" id="contact_id">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label for="first_name" class="form-label">Name</label>
+                                <input required name="first" type="text" class="form-control" id="first_name" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label  for="single-contact" class="form-label">Email</label>
+                                <input required  name="contact" type="tel" class="form-control" id="single-contact" >
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseModal()">Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="UpdateContact()">Update</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="sharecontacts" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black">Share Contact</h5>
+                <button type="button" class="close" onclick="CloseShareModal()" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <a id="whatsapp-link" href=""> <i class="ion-social-whatsapp-outline"
+                                                  style="width:98px;font-size:68px;color:green"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="facebook-link" href=""><i class="ion-social-facebook"
+                                                 style="width:168px;font-size:68px;color:blueviolet;"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a id="linkedin-link" href=""><i class="ion-social-linkedin"
+                                                 style="width:68px;font-size:68px;color:blueviolet;"></i></a><span>  </span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseShareModal()">Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="subscribe" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
+    <form class="form">
+        <div class="modal-header">
+            <h5 class="modal-title"></h5>
+            <button style="color: black" type="button" class="close" onclick="CloseSubscribeModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <label class="title">Buy Our Subscription</label>
+            <p class="description">In order to add more contacts buy our subscription now. Go PRO now! </p>
+            <div class="tab-container">
+                <button type="button" onclick="subscribe({ period: 'Monthly', amount: 9 })" class="tab tab--1">Monthly</button>
+                <button type="button" onclick="subscribeYYYY({ period: 'Yearly', amount: 99 })" class="tab tab--2">Annual</button>
+                <div class="indicator"></div>
+            </div>
+
+
+            <div class="benefits">
+                <span>What we offer</span>
+                <ul>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" height="16" width="16">
+                            <rect fill="black" rx="8" height="16" width="16"></rect>
+                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="white"
+                                  d="M5 8.5L7.5 10.5L11 6"></path>
+                        </svg>
+                        <span>Get to add unlimited contacts</span>
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16" height="16" width="16">
+                            <rect fill="black" rx="8" height="16" width="16"></rect>
+                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5" stroke="white"
+                                  d="M5 8.5L7.5 10.5L11 6"></path>
+                        </svg>
+                        <span>Unlock more exciting features</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal--footer">
+            <label class="price"><sup>&#x20B9;</sup>9<sub>/mo</sub></label>
+            <button class="upgrade-btn" type="button" onclick="subscribe({ period: 'Monthly', amount: 9 })">Upgrade to PRO</button>
+        </div>
+    </form>
+</div>
+
+<div class="main-content">
+
+    <section class="contact section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-3">
+                    <div class="form md-mb50">
+
+                        <h4 class="fw-700 color-font mb-50">Add Contacts</h4>
+
+
+                        <form id="Form">
+
+                            <div class="messages"></div>
+
+                            <div class="controls">
+
+                                <div class="form-group">
+                                    <input required name="name" width="100%" id="name" type="text" placeholder="Enter Name"/> <br>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <input required name="email" id="contact" type="tel" minlength="10" maxlength="10" placeholder="Enter Contact"/> <br>
+                                </div>
+
+                                <div class="form-group">
+                                    <input name="photo" required type="file" id="photo"/>
+                                </div>
+
+                                <button id="button" type="button" class="btn btn-primary" onclick="onSubmit()">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact ">
+        <div class="container">
+            <h4 class="fw-700 color-font mb-50">Manage Contacts</h4>
+
+            <table id="myTable" class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">Sr No.</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Contact</th>
+                    <th class="text-center">Image</th>
+                    <th class="text-center">Edit</th>
+                    <th class="text-center">Delete</th>
+                    <th class="text-center">Share</th>
+
+                </tr>
+                </thead>
+                <tbody id="users"></tbody>
+            </table>
+
+        </div>
+    </section>
+
+    <%- include('../Files/Footer.ejs') %>
+
+</div>
+
+
+<%- include('../Files/Scripts.ejs') %>
+
+<script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+<script>
+
+    function validateContactNumber(contact) {
+        let phoneno = /^\d{10}$/;
+        return contact.match(phoneno) !== null;
+    }
+    async function onSubmit() {
+        let name = document.getElementById('name').value
+        let contact = document.getElementById('contact').value
+        let photo = document.getElementById('photo').files[0]
+
+
+            let formData = new FormData()
+            formData.append('nameUser', name)
+            formData.append('contact', contact)
+            formData.append('photo', photo)
+
+            if($("#Form").valid()) {
+
+                if (!validateContactNumber(contact)) {
+                    Qual.errord("Invalid contact number. Please enter a 10-digit number.");
+                    return;
+                }
+
+
+                let url = "/add-contact"
+            let response = await fetch(url, {
+                method: 'POST',
+                //headers:{'Content-Type':'application/json'},
+                body: formData
+            })
+            response = await response.json();
+            //console.log(response)
+            if (response.error == "Open Modal") {
+                $('#subscribe').modal('show');
+
+                // Add a CSS class to the body element to dim the background
+                document.body.classList.add('modal-open');
+            } else if (response.error != "") {
+                Qual.errord(response.error)
+            } else {
+                Qual.successd("Success", response.message)
+                document.getElementById('Form').reset()
+                ReadContact()
+            }
+        }
+    }
+
+    let product;
+
+    const tableRows = document.querySelectorAll('tr');
+
+    async function ReadContact() {
+        // get user from server
+        let url = "/read-contact"
+        let response = await fetch(url)
+        response = await response.json()
+        // console.log(response.error)
+        if (response.error != "") {
+            // console.log(response.error)
+            Qual.errord("Oh no !", response.error);
+        } else {
+            // console.log(response.records)
+            product = response.records
+            let html = ``;
+            for (let i = 0; i < response.records.length; i++) {
+                let record = response.records[i];
+                //console.log(record)
+                html += `<tr >
+<td class="text-center">${i + 1}</td>
+                         <td class="text-center text-lg-center">${record.name}</td>
+                         <td class="text-center">${record.contact}</td>
+<td class="text-center text-justify"><img src="${record.photo}" alt="" style="height:50px;width:50px"/></td>
+<td class="text-center text-justify"><button type="button" class="btn btn-primary btn-sm" onclick="EditContact(${record.id})" >Edit</button></td>
+<td class="text-center">
+<button onclick="DeleteContact(${record.id})" class="btn btn-danger btn-sm">Delete</button></td>
+<td class="text-center">
+  <button onclick="ShareContact(${record.id})" type="button" class="btn btn-secondary btn-sm "> Share</button>
+</td>
+
+                         </tr>`
+            }
+            document.getElementById('users').innerHTML = html;
+            let table = new DataTable('#myTable');
+        }
+
+    }
+
+    async function DeleteContact(id) {
+        if (confirm('Are You Sure ?')) {
+            let url = "/delete-contact/" + id
+            let response = await fetch(url)
+            response = await response.json()
+            // console.log(response)
+
+            if (response.error != '') {
+                Qual.errord(response.error)
+            } else {
+                ReadContact()
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                })
+            }
+        }
+    }
+
+    async function EditContact(id) {
+        //console.log(product)
+        //console.log(id)
+        let dataFilter = product.filter((x) => x.id == id)
+        //console.log(dataFilter)
+        //console.log(dataFilter[0].name)
+        //console.log(dataFilter[0].contact)
+        document.getElementById('contact_id').value = dataFilter[0].id
+        document.getElementById('first_name').value = dataFilter[0].name
+        document.getElementById('single-contact').value = dataFilter[0].contact
+        $('#editcontacts').modal('show');
+
+        // Add a CSS class to the body element to dim the background
+        document.getElementById('modalOverlay').style.display = 'flex'
+    }
+
+    async function CloseModal() {
+        $('#editcontacts').modal('hide');
+
+        // Remove the CSS class from the body element to restore the background
+        document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    async function CloseShareModal() {
+        $('#sharecontacts').modal('hide');
+
+        // Remove the CSS class from the body element to restore the background
+        document.body.classList.remove('modal-open');
+    }
+
+    async function CloseSubscribeModal() {
+        $('#subscribe').modal('hide');
+
+        // Remove the CSS class from the body element to restore the background
+        document.body.classList.remove('modal-open');
+    }
+
+
+    async function UpdateContact() {
+        let contact_id = document.getElementById('contact_id').value
+        let name = document.getElementById('first_name').value
+        let contact = document.getElementById('single-contact').value
+
+        if($("#editContact").valid()) {
+            let url = "/update-contact"
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({contact_id: contact_id, name: name, contact: contact})
+            })
+            response = await response.json();
+            //console.log(response)
+            if (response.error !=="") {
+                Qual.errord(response.error)
+            } else {
+                Swal.fire({
+                    title: "Good job!",
+                    text: (response.message),
+                    icon: "success"
+                })
+                ReadContact()
+
+                CloseModal()
+
+            }
+        }
+    }
+
+    async function ShareContact(id) {
+        //  console.log(id)
+
+        let url = "/share/" + id;
+        let response = await fetch(url, {
+            method: 'POST',
+        })
+        response = await response.json()
+        // console.log(response)
+
+        if (response.error !== "") {
+            Qual.errord("OH No", response.error);
+        } else {
+
+
+            const socialMediaLinks = response.socialMediaLinks;
+
+            // Update the modal content with the response data
+
+            $('#whatsapp-link').attr('href', socialMediaLinks.whatsapp);
+            $('#facebook-link').attr('href', socialMediaLinks.facebook);
+            $('#twitter-link').attr('href', socialMediaLinks.twitter);
+            $('#linkedin-link').attr('href', socialMediaLinks.linkedin);
+
+            $('#sharecontacts').modal('show')
+
+            // Add a CSS class to the body element to dim the background
+            document.body.classList.add('modal-open')
+
+        }
+
+    }
+
+    async function OpenSubModal(){
+        $('#subscribe').modal('show');
+
+        // Add a CSS class to the body element to dim the background
+        document.body.classList.add('modal-open');
+    }
+
+
+    async function subscribe(data) {
+        const options = {
+            key: 'rzp_test_J9lao0xLSXa7vE', // Replace with your Razorpay API key
+            currency: 'INR',
+            name: `${data.period} Subscription`,
+            amount: data.amount * 100, // Use the amount from the object
+            description: `${data.period} Payment Gateway`,
+            image: "/img/logo-light.png",
+            handler: function (response) {
+                RazorPayResponse(response);
+            },
+            theme: {
+                color: '#000',
+            },
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+    }
+
+
+    async function RazorPayResponse(response) {
+        if (response.razorpay_payment_id !== "") {
+            console.log(response)
+            // console.log(response.razorpay_payment_id);
+            await Subs()
+        } else {
+            alert("Payment Failed");
+        }
+
+    }
+
+    async function Subs() {
+        console.log()
+        let url = "/subscribed"
+        let response = await fetch(url,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({})
+        })
+        response = await response.json()
+        //  console.log(response)
+        if (response.error !== "") {
+            Qual.errord("OH No ", response.error)
+        } else {
+            Swal.fire({
+                title: "Good job!",
+                text: (response.message),
+                icon: "success"
+            }).then(() => {
+                CloseSubscribeModal()
+                window.location.href("/user-dashboard")
+            })
+        }
+
+    }
+
+
+    async function subscribeYYYY(data) {
+        const options = {
+            key: 'rzp_test_J9lao0xLSXa7vE', // Replace with your Razorpay API key
+            currency: 'INR',
+            name: `${data.period} Subscription`,
+            amount: data.amount * 100, // Use the amount from the object
+            description: `${data.period} Payment Gateway`,
+            image: "/img/logo-light.png",
+            handler: function (response) {
+                RazorPayResponseYYYY(response);
+            },
+            theme: {
+                color: '#000',
+            },
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+    }
+
+
+    async function RazorPayResponseYYYY(response) {
+        if (response.razorpay_payment_id !== "") {
+            console.log(response)
+            // console.log(response.razorpay_payment_id);
+            await SubsYYYY()
+        } else {
+            alert("Payment Failed");
+        }
+
+    }
+
+    async function SubsYYYY() {
+        console.log()
+        let url = "/subscribed-yearly"
+        let response = await fetch(url,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({})
+        })
+        response = await response.json()
+        //  console.log(response)
+        if (response.error !== "") {
+            Qual.errord("OH No ", response.error)
+        } else {
+            Swal.fire({
+                title: "Good job!",
+                text: (response.message),
+                icon: "success"
+            }).then(() => {
+                window.location.href("/user-dashboard")
+            })
+        }
+
+    }
+
+</script>
+
+
+</body>
+</html>

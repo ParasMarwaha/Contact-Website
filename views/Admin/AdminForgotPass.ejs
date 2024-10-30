@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <%- include('../Files/HeaderFiles.ejs') %>
+    <script src="https://cdn.jsdelivr.net/gh/cosmogicofficial/quantumalert@latest/minfile/quantumalert.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+<%- include('../Files/Header.ejs') %>
+<%- include('../Files/BreadCrumb.ejs', {title: 'Change Password'}) %>
+
+
+
+<div class="main-content">
+    <section class="contact section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-md-3">
+                    <div class="form md-mb50">
+
+                        <h4 class="fw-700 color-font mb-50">Verify E-mail</h4>
+
+                        <form id="contact-form" >
+
+                            <div class="messages"></div>
+
+                            <div class="controls">
+
+                                <div class="form-group">
+                                    <input required name="email"  id="email" type="email" placeholder="enter email">
+                                </div>
+
+
+                                <button type="button" class="btn btn-primary" onclick="onSend()">Send OTP</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <%- include('../Files/Footer.ejs') %>
+</div>
+
+
+
+<%- include('../Files/Scripts.ejs') %>
+<script>
+    async function onSend() {
+        let email = document.getElementById('email').value;
+
+
+        if($("#contact-form").valid()) {
+            let url = "/admin-forgot-pass";
+            let response = await fetch(url, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email: email})
+            });
+            response = await response.json();
+            //console.log(response);
+
+            if (response.error != "") {
+                Qual.errord("Oh No", response.error)
+            } else {
+                //console.log("success")
+                Swal.fire({
+                    title: "Good job!",
+                    text: "You clicked the button!",
+                    icon: "success"
+                })
+                    .then(() => {
+                        window.location.href = "/admin-otp/" + email
+                    })
+            }
+        }
+
+    }
+</script>
+</body>
+</html>
